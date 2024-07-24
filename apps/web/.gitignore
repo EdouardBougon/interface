@@ -3,11 +3,11 @@
 .tamagui
 
 # generated contract types
-/src/i18n/locales/translations
+/src/i18n/locales/translations/*.json
 /src/i18n/locales/source/en-US_old.json
 
 # generated files
-/src/**/__generated__
+/src/**/__generated__/*.js
 
 # dependencies
 /node_modules

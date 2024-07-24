@@ -10,6 +10,7 @@ or visit [app.uniswap.org](https://app.uniswap.org).
 
 ```bash
 yarn
+yarn g:prepare & yarn g:build
 yarn web start
 ```
 
