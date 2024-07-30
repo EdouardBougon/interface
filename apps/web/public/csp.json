@@ -39,6 +39,7 @@
     "https://*.gemini.com",
     "https://*.googleapis.com",
     "https://*.infura.io",
+    "https://*.metamask.io",
     "https://*.nodereal.io",
     "https://*.optimism.io",
     "https://*.quiknode.pro",
@@ -100,7 +101,8 @@
     "wss://relay.walletconnect.com",
     "wss://relay.walletconnect.org",
     "wss://ws-us3.pusher.com/",
-    "wss://www.walletlink.org"
+    "wss://www.walletlink.org",
+    "wss://metamask-sdk.api.cx.metamask.io"
   ],
   "workerSrc": [
     "'self'",

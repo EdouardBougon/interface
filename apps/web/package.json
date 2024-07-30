@@ -284,7 +284,7 @@
     "uuid": "9.0.0",
     "video-extensions": "1.2.0",
     "viem": "2.x",
-    "wagmi": "2.8.4",
+    "wagmi": "2.12.2",
     "wcag-contrast": "3.0.0",
     "web-vitals": "2.1.4",
     "xml2js": "0.6.2",
