@@ -39,7 +39,16 @@ export function useConnectorWithId(id: ConnectorID, options?: { shouldThrow: tru
 
 function getInjectedConnectors(connectors: readonly Connector[], excludeUniswapConnections?: boolean) {
   let isCoinbaseWalletBrowser = false
+  let isMetaMaskWalletBrowser = false
   const injectedConnectors = connectors.filter((c) => {
+    // Special-case: Ignore metaMask eip6963-injected connector; metaMask connection is handled via the SDK connector.
+    if (c.id === CONNECTION.METAMASK_RDNS) {
+      if (isMobile) {
+        isMetaMaskWalletBrowser = true
+      }
+      return false
+    }
+
     // Special-case: Ignore coinbase eip6963-injected connector; coinbase connection is handled via the SDK connector.
     if (c.id === CONNECTION.COINBASE_RDNS) {
       if (isMobile) {
@@ -57,12 +66,12 @@ function getInjectedConnectors(connectors: readonly Connector[], excludeUniswapC
   })
 
   // Special-case: Return deprecated window.ethereum connector when no eip6963 injectors are present.
-  const fallbackInjector = getConnectorWithId(connectors, CONNECTION.INJECTED_CONNECTOR_ID, { shouldThrow: true })
-  if (!injectedConnectors.length && Boolean(window.ethereum)) {
-    return { injectedConnectors: [fallbackInjector], isCoinbaseWalletBrowser }
+  if (!injectedConnectors.length && Boolean(window.ethereum) && !window.ethereum?.isMetaMask) {
+    const defaultInjected = getConnectorWithId(connectors, CONNECTION.INJECTED_CONNECTOR_ID, { shouldThrow: true })
+    return { injectedConnectors: [defaultInjected], isCoinbaseWalletBrowser, isMetaMaskWalletBrowser }
   }
 
-  return { injectedConnectors, isCoinbaseWalletBrowser }
+  return { injectedConnectors, isCoinbaseWalletBrowser, isMetaMaskWalletBrowser }
 }
 
 export function useOrderedConnections(excludeUniswapConnections?: boolean) {
@@ -83,8 +92,13 @@ export function useOrderedConnections(excludeUniswapConnections?: boolean) {
   )
 
   return useMemo(() => {
-    const { injectedConnectors, isCoinbaseWalletBrowser } = getInjectedConnectors(connectors, excludeUniswapConnections)
+    const {
+      injectedConnectors,
+      isCoinbaseWalletBrowser,
+      isMetaMaskWalletBrowser,
+    } = getInjectedConnectors(connectors, excludeUniswapConnections)
 
+    const metaMaskConnector = getConnectorWithId(connectors, CONNECTION.METAMASK_ID, SHOULD_THROW)
     const coinbaseSdkConnector = getConnectorWithId(connectors, CONNECTION.COINBASE_SDK_CONNECTOR_ID, SHOULD_THROW)
     const walletConnectConnector = getConnectorWithId(connectors, CONNECTION.WALLET_CONNECT_CONNECTOR_ID, SHOULD_THROW)
     const uniswapWalletConnectConnector = getConnectorWithId(
@@ -92,13 +106,18 @@ export function useOrderedConnections(excludeUniswapConnections?: boolean) {
       CONNECTION.UNISWAP_WALLET_CONNECT_CONNECTOR_ID,
       SHOULD_THROW,
     )
-    if (!coinbaseSdkConnector || !walletConnectConnector || !uniswapWalletConnectConnector) {
+    if (!coinbaseSdkConnector || !walletConnectConnector || !uniswapWalletConnectConnector || !metaMaskConnector) {
       throw new Error('Expected connector(s) missing from wagmi context.')
     }
 
     // Special-case: Only display the injected connector for in-wallet browsers.
     if (isMobile && injectedConnectors.length === 1) {
       return injectedConnectors
+    }
+
+    // Special-case: Only display the MetaMask connector in the MetaMask Wallet.
+    if (isMetaMaskWalletBrowser) {
+      return [metaMaskConnector]
     }
 
     // Special-case: Only display the Coinbase connector in the Coinbase Wallet.
@@ -118,6 +137,7 @@ export function useOrderedConnections(excludeUniswapConnections?: boolean) {
     orderedConnectors.push(...injectedConnectors)
 
     // WalletConnect and Coinbase are added last in the list.
+    orderedConnectors.push(metaMaskConnector)
     orderedConnectors.push(walletConnectConnector)
     orderedConnectors.push(coinbaseSdkConnector)
 

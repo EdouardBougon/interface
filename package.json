@@ -71,6 +71,7 @@
     "xml2js": "0.5.0",
     "moti": "0.27.2",
     "yaml": "2.2.2",
+    "viem": "2.18.5",
     "multiformats@^9.4.2": "patch:multiformats@npm%3A9.4.2#./.yarn/patches/multiformats-npm-9.4.2-44b8a13c1d.patch",
     "@vercel/og@0.5.8": "patch:@vercel/og@npm%3A0.5.8#./.yarn/patches/@vercel-og-npm-0.5.8-83a79f2744.patch",
     "@web3-react/coinbase-wallet@8.2.3": "patch:@web3-react/coinbase-wallet@npm%3A8.2.3#./.yarn/patches/@web3-react-coinbase-wallet-npm-8.2.3-9c7073f079.patch",
