@@ -12,7 +12,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const commitHash = execSync('git rev-parse HEAD').toString().trim()
 const isProduction = process.env.NODE_ENV === 'production'
-const isDev =  process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV === 'development'
 
 process.env.REACT_APP_GIT_COMMIT_HASH = commitHash
 
@@ -65,7 +65,7 @@ module.exports = {
         cacheDirectory: getCacheDirectory('jest'),
         transform: {
           ...Object.entries(jestConfig.transform).reduce((transform, [key, value]) => {
-            if (value.match(/babel/)) {return transform}
+            if (value.match(/babel/)) { return transform }
             return { ...transform, [key]: value }
           }, {}),
           // Transform vanilla-extract using its own transformer.
@@ -110,7 +110,7 @@ module.exports = {
       webpackConfig.resolve.extensions.unshift('.web.tsx')
       webpackConfig.resolve.extensions.unshift('.web.ts')
       webpackConfig.resolve.extensions.unshift('.web.js')
-      
+
       if (isProduction || process.env.UNISWAP_ANALYZE_BUNDLE_SIZE) {
         // do bundle analysis
         webpackConfig.plugins.push(
@@ -141,10 +141,10 @@ module.exports = {
         .filter((plugin) => {
           // Case sensitive paths are already enforced by TypeScript.
           // See https://www.typescriptlang.org/tsconfig#forceConsistentCasingInFileNames.
-          if (plugin instanceof CaseSensitivePathsPlugin) {return false}
+          if (plugin instanceof CaseSensitivePathsPlugin) { return false }
 
           // IgnorePlugin is used to tree-shake moment locales, but we do not use moment in this project.
-          if (plugin instanceof IgnorePlugin) {return false}
+          if (plugin instanceof IgnorePlugin) { return false }
 
           return true
         })
@@ -162,9 +162,9 @@ module.exports = {
           // Allow vanilla-extract in production builds.
           // This is necessary because create-react-app guards against external imports.
           // See https://sandroroth.com/blog/vanilla-extract-cra#production-build.
-          if (plugin instanceof ModuleScopePlugin) {
-            plugin.allowedPaths.push(path.join(__dirname, '..', '..', 'node_modules/@vanilla-extract/webpack-plugin'))
-          }
+          // if (plugin instanceof ModuleScopePlugin) {
+          plugin.allowedPaths.push(path.join(__dirname, '..', '..', 'node_modules/@vanilla-extract/webpack-plugin'))
+          // }
 
           return plugin
         }),
@@ -286,9 +286,9 @@ module.exports = {
         webpackConfig.optimization,
         isProduction
           ? {
-              // Optimize over all chunks, instead of async chunks (the default), so that initial chunks are also included.
-              splitChunks: { chunks: 'all' },
-            }
+            // Optimize over all chunks, instead of async chunks (the default), so that initial chunks are also included.
+            splitChunks: { chunks: 'all' },
+          }
           : {}
       )
 
