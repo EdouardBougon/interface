@@ -103,7 +103,9 @@
     "wss://relay.walletconnect.org",
     "wss://ws-us3.pusher.com/",
     "wss://www.walletlink.org",
-    "wss://metamask-sdk.api.cx.metamask.io"
+    "wss://metamask-sdk.api.cx.metamask.io",
+    "wss://*.ngrok.app:3000",
+    "wss://*.ngrok.app"
   ],
   "workerSrc": [
     "'self'",

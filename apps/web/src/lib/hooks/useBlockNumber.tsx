@@ -51,6 +51,7 @@ export function BlockNumberProvider({ children }: PropsWithChildren) {
   }>({})
   const activeBlock = chainId === multicallChainId ? block : undefined
   const onChainBlock = useCallback((chainId: number | undefined, block: number) => {
+    // console.log('useBlockNumber', 'onChainBlock', block)
     setChainBlock((chainBlock) => {
       if (chainBlock.chainId === chainId) {
         if (!chainBlock.block || chainBlock.block < block) {
