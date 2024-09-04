@@ -23,6 +23,8 @@ export const wagmiConfig = createConfig({
   ],
   connectors: [
     metaMask({
+      checkInstallationOnAllCalls: false,
+      checkInstallationImmediately: false,
       extensionOnly: true,
       dappMetadata: {
         name: 'Uniswap',
