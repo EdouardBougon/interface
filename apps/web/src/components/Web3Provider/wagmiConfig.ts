@@ -20,6 +20,8 @@ export const wagmiConfig = createConfig({
   chains: [getChainInfo(UniverseChainId.Mainnet), ...ALL_CHAIN_IDS.map(getChainInfo)],
   connectors: [
     metaMask({
+      checkInstallationOnAllCalls: false,
+      checkInstallationImmediately: false,
       extensionOnly: true,
       dappMetadata: {
         name: 'Uniswap',
