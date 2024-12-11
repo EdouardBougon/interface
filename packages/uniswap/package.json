@@ -89,7 +89,7 @@
     "ui": "workspace:^",
     "utilities": "workspace:^",
     "uuid": "9.0.0",
-    "wagmi": "2.13.0",
+    "wagmi": "2.14.0",
     "wcag-contrast": "3.0.0"
   },
   "devDependencies": {
