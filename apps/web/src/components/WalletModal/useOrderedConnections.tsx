@@ -39,16 +39,7 @@ export function useConnectorWithId(id: ConnectorID, options?: { shouldThrow: tru
 }
 
 function getInjectedConnectors(connectors: readonly Connector[]) {
-  let isCoinbaseWalletBrowser = false
   const injectedConnectors = connectors.filter((c) => {
-    // Special-case: Ignore coinbase eip6963-injected connector; coinbase connection is handled via the SDK connector.
-    if (c.id === CONNECTION_PROVIDER_IDS.COINBASE_RDNS) {
-      if (isMobileWeb) {
-        isCoinbaseWalletBrowser = true
-      }
-      return false
-    }
-
     // Special-case: Ignore the Uniswap Extension injection here if it's being displayed separately.
     if (c.id === CONNECTION_PROVIDER_IDS.UNISWAP_EXTENSION_RDNS) {
       return false
@@ -61,14 +52,14 @@ function getInjectedConnectors(connectors: readonly Connector[]) {
   })
 
   // Special-case: Return deprecated window.ethereum connector when no eip6963 injectors are present.
-  const fallbackInjector = getConnectorWithId(connectors, CONNECTION_PROVIDER_IDS.INJECTED_CONNECTOR_ID, {
-    shouldThrow: true,
-  })
-  if (!injectedConnectors.length && Boolean(window.ethereum)) {
-    return { injectedConnectors: [fallbackInjector], isCoinbaseWalletBrowser }
+  if (!injectedConnectors.length && Boolean(window.ethereum) && !window.ethereum?.isMetaMask) {
+    const defaultInjected = getConnectorWithId(connectors, CONNECTION_PROVIDER_IDS.INJECTED_CONNECTOR_ID, {
+      shouldThrow: true,
+    })
+    return { injectedConnectors: [defaultInjected] }
   }
 
-  return { injectedConnectors, isCoinbaseWalletBrowser }
+  return { injectedConnectors }
 }
 
 /**
@@ -94,9 +85,9 @@ export function useOrderedConnections(): InjectableConnector[] {
   )
 
   return useMemo(() => {
-    const { injectedConnectors: injectedConnectorsBase, isCoinbaseWalletBrowser } = getInjectedConnectors(connectors)
-    const injectedConnectors = injectedConnectorsBase.map((c) => ({ ...c, isInjected: true }))
+    const { injectedConnectors } = getInjectedConnectors(connectors)
 
+    const metaMaskConnector = getConnectorWithId(connectors, CONNECTION_PROVIDER_IDS.METAMASK_SDK_ID, SHOULD_THROW)
     const coinbaseSdkConnector = getConnectorWithId(
       connectors,
       CONNECTION_PROVIDER_IDS.COINBASE_SDK_CONNECTOR_ID,
@@ -107,7 +98,7 @@ export function useOrderedConnections(): InjectableConnector[] {
       CONNECTION_PROVIDER_IDS.WALLET_CONNECT_CONNECTOR_ID,
       SHOULD_THROW,
     )
-    if (!coinbaseSdkConnector || !walletConnectConnector) {
+    if (!coinbaseSdkConnector || !walletConnectConnector || !metaMaskConnector) {
       throw new Error('Expected connector(s) missing from wagmi context.')
     }
 
@@ -116,19 +107,15 @@ export function useOrderedConnections(): InjectableConnector[] {
       return injectedConnectors
     }
 
-    // Special-case: Only display the Coinbase connector in the Coinbase Wallet.
-    if (isCoinbaseWalletBrowser) {
-      return [coinbaseSdkConnector]
-    }
-
     const orderedConnectors: InjectableConnector[] = []
 
     // Injected connectors should appear next in the list, as the user intentionally installed/uses them.
     orderedConnectors.push(...injectedConnectors)
 
-    // WalletConnect and Coinbase are added last in the list.
-    orderedConnectors.push(walletConnectConnector)
+    // MetaMask, WalletConnect and Coinbase are added last in the list.
+    orderedConnectors.push(metaMaskConnector)
     orderedConnectors.push(coinbaseSdkConnector)
+    orderedConnectors.push(walletConnectConnector)
 
     // Place the most recent connector at the top of the list.
     orderedConnectors.sort(sortByRecent)

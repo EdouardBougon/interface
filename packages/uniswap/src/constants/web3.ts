@@ -4,8 +4,7 @@ export const CONNECTION_PROVIDER_IDS = {
   INJECTED_CONNECTOR_ID: 'injected',
   INJECTED_CONNECTOR_TYPE: 'injected',
   COINBASE_SDK_CONNECTOR_ID: 'coinbaseWalletSDK',
-  COINBASE_RDNS: 'com.coinbase.wallet',
-  METAMASK_RDNS: 'io.metamask',
+  METAMASK_SDK_ID: 'metaMaskSDK',
   UNISWAP_EXTENSION_RDNS: 'org.uniswap.app',
   SAFE_CONNECTOR_ID: 'safe',
 } as const

@@ -49,7 +49,7 @@ describe('useOrderedConnections', () => {
     const { result } = renderHook(() => useOrderedConnections())
 
     const expectedConnectors = [
-      { id: CONNECTION_PROVIDER_IDS.METAMASK_RDNS },
+      { id: CONNECTION_PROVIDER_IDS.METAMASK_SDK_ID },
       { id: CONNECTION_PROVIDER_IDS.WALLET_CONNECT_CONNECTOR_ID },
       { id: CONNECTION_PROVIDER_IDS.COINBASE_SDK_CONNECTOR_ID },
     ]
@@ -75,7 +75,7 @@ describe('useOrderedConnections', () => {
 
     const expectedConnectors = [
       { id: CONNECTION_PROVIDER_IDS.WALLET_CONNECT_CONNECTOR_ID },
-      { id: CONNECTION_PROVIDER_IDS.METAMASK_RDNS },
+      { id: CONNECTION_PROVIDER_IDS.METAMASK_SDK_ID },
       { id: CONNECTION_PROVIDER_IDS.COINBASE_SDK_CONNECTOR_ID },
     ]
 
@@ -89,7 +89,7 @@ describe('useOrderedConnections', () => {
     UserAgentMock.isMobileWeb = true
     const { result } = renderHook(() => useOrderedConnections())
     expect(result.current.length).toEqual(1)
-    expect(result.current[0].id).toEqual(CONNECTION_PROVIDER_IDS.METAMASK_RDNS)
+    expect(result.current[0].id).toEqual(CONNECTION_PROVIDER_IDS.METAMASK_SDK_ID)
   })
 
   it('should return only the Coinbase injected connector in the Coinbase Wallet', async () => {
@@ -109,7 +109,7 @@ describe('useOrderedConnections', () => {
     const { result } = renderHook(() => useOrderedConnections())
 
     const expectedConnectors = [
-      { id: CONNECTION_PROVIDER_IDS.METAMASK_RDNS },
+      { id: CONNECTION_PROVIDER_IDS.METAMASK_SDK_ID },
       { id: CONNECTION_PROVIDER_IDS.WALLET_CONNECT_CONNECTOR_ID },
       { id: CONNECTION_PROVIDER_IDS.COINBASE_SDK_CONNECTOR_ID },
     ]

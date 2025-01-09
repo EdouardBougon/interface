@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query'
-import { injectedWithFallback } from 'components/Web3Provider/injectedWithFallback'
+import { defaultInjected } from 'components/Web3Provider/defaultInjected'
 import { WC_PARAMS } from 'components/Web3Provider/walletConnect'
 import { UNISWAP_LOGO } from 'ui/src/assets'
 import { UNISWAP_WEB_URL } from 'uniswap/src/constants/urls'
@@ -8,7 +8,7 @@ import { ALL_CHAIN_IDS, UniverseChainId } from 'uniswap/src/features/chains/type
 import { createClient } from 'viem'
 import { createConfig, http } from 'wagmi'
 import { connect } from 'wagmi/actions'
-import { coinbaseWallet, injected, safe, walletConnect } from 'wagmi/connectors'
+import { coinbaseWallet, metaMask, safe, walletConnect } from 'wagmi/connectors'
 
 declare module 'wagmi' {
   interface Register {
@@ -19,8 +19,15 @@ declare module 'wagmi' {
 export const wagmiConfig = createConfig({
   chains: [getChainInfo(UniverseChainId.Mainnet), ...ALL_CHAIN_IDS.map(getChainInfo)],
   connectors: [
-    injectedWithFallback(),
+    defaultInjected(),
     walletConnect(WC_PARAMS),
+    metaMask({
+      dappMetadata: {
+        name: 'Uniswap',
+        url: `${UNISWAP_WEB_URL}`,
+        iconUrl: `${UNISWAP_WEB_URL}${UNISWAP_LOGO}`,
+      },
+    }),
     coinbaseWallet({
       appName: 'Uniswap',
       // CB SDK doesn't pass the parent origin context to their passkey site
@@ -45,5 +52,5 @@ export const queryClient = new QueryClient()
 
 // Automatically connect if running in Cypress environment
 if ((window as any).Cypress?.eagerlyConnect) {
-  connect(wagmiConfig, { connector: injected() })
+  connect(wagmiConfig, { connector: defaultInjected() })
 }

@@ -93,7 +93,7 @@
     "ui": "workspace:^",
     "utilities": "workspace:^",
     "uuid": "9.0.0",
-    "wagmi": "2.9.3",
+    "wagmi": "2.14.7",
     "wcag-contrast": "3.0.0",
     "zod": "3.22.4"
   },
